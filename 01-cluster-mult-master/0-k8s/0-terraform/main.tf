@@ -7,10 +7,10 @@ data "http" "myip" {
 }
 
 resource "aws_instance" "k8s_proxy" {
-  ami           = data.aws_ami.ubuntu.id
+  ami                         = "ami-054a31f1b3bf90920" #data.aws_ami.ubuntu.id
   subnet_id                   = "subnet-03575db38d50158f1"
-  instance_type = "t2.micro"
-  key_name      = "key-dev-ernane-aws"
+  instance_type               = "t2.micro"
+  key_name                    = "key-dev-ernane-aws"
   associate_public_ip_address = true
 
   root_block_device {
@@ -26,10 +26,10 @@ resource "aws_instance" "k8s_proxy" {
 }
 
 resource "aws_instance" "k8s_masters" {
-  ami           = data.aws_ami.ubuntu.id
+  ami                         = "ami-054a31f1b3bf90920" #data.aws_ami.ubuntu.id
   subnet_id                   = "subnet-03575db38d50158f1"
-  instance_type = "t2.large"
-  key_name      = "key-dev-ernane-aws"
+  instance_type               = "t2.large"
+  key_name                    = "key-dev-ernane-aws"
   associate_public_ip_address = true
 
   root_block_device {
@@ -51,12 +51,12 @@ resource "aws_instance" "k8s_masters" {
 }
 
 resource "aws_instance" "k8s_workers" {
-  ami           = data.aws_ami.ubuntu.id
+  ami                         = "ami-054a31f1b3bf90920" # data.aws_ami.ubuntu.id
   subnet_id                   = "subnet-03575db38d50158f1"
-  instance_type = "t2.medium"
-  key_name      = "key-dev-ernane-aws"
+  instance_type               = "t2.medium"
+  key_name                    = "key-dev-ernane-aws"
   associate_public_ip_address = true
-  
+
   root_block_device {
     encrypted   = true
     volume_size = 16
@@ -75,6 +75,7 @@ resource "aws_instance" "k8s_workers" {
 resource "aws_security_group" "acessos_master" {
   name        = "k8s-acessos_master"
   description = "acessos inbound traffic"
+  vpc_id      = "vpc-002bf2946d3dba700"
 
   ingress = [
     {
@@ -84,9 +85,9 @@ resource "aws_security_group" "acessos_master" {
       protocol         = "tcp"
       cidr_blocks      = ["0.0.0.0/0"] #${chomp(data.http.myip.body)}/32"]
       ipv6_cidr_blocks = []
-      prefix_list_ids = null,
-      security_groups: null,
-      self: null
+      prefix_list_ids  = null,
+      security_groups : null,
+      self : null
     },
     {
       cidr_blocks      = []
@@ -106,11 +107,11 @@ resource "aws_security_group" "acessos_master" {
       ipv6_cidr_blocks = []
       prefix_list_ids  = []
       protocol         = "-1"
-      security_groups  = [
+      security_groups = [
         "sg-080839aec5b31b9a3",
       ]
-      self             = false
-      to_port          = 0
+      self    = false
+      to_port = 0
     },
   ]
 
@@ -121,10 +122,10 @@ resource "aws_security_group" "acessos_master" {
       protocol         = "-1"
       cidr_blocks      = ["0.0.0.0/0"]
       ipv6_cidr_blocks = [],
-      prefix_list_ids = null,
-      security_groups: null,
-      self: null,
-      description: "Libera dados da rede interna"
+      prefix_list_ids  = null,
+      security_groups : null,
+      self : null,
+      description : "Libera dados da rede interna"
     }
   ]
 
@@ -137,6 +138,7 @@ resource "aws_security_group" "acessos_master" {
 resource "aws_security_group" "acessos" {
   name        = "k8s-workers"
   description = "acessos inbound traffic"
+  vpc_id      = "vpc-002bf2946d3dba700"
 
   ingress = [
     {
@@ -146,9 +148,9 @@ resource "aws_security_group" "acessos" {
       protocol         = "tcp"
       cidr_blocks      = ["0.0.0.0/0"] #${chomp(data.http.myip.body)}/32"]
       ipv6_cidr_blocks = []
-      prefix_list_ids = null,
-      security_groups: null,
-      self: null
+      prefix_list_ids  = null,
+      security_groups : null,
+      self : null
     },
     {
       cidr_blocks      = []
@@ -157,11 +159,11 @@ resource "aws_security_group" "acessos" {
       ipv6_cidr_blocks = []
       prefix_list_ids  = []
       protocol         = "-1"
-      security_groups  = [
+      security_groups = [
         "${aws_security_group.acessos_master.id}",
       ]
-      self             = false
-      to_port          = 0
+      self    = false
+      to_port = 0
     },
     {
       cidr_blocks      = []
@@ -183,10 +185,10 @@ resource "aws_security_group" "acessos" {
       protocol         = "-1"
       cidr_blocks      = ["0.0.0.0/0"]
       ipv6_cidr_blocks = [],
-      prefix_list_ids = null,
-      security_groups: null,
-      self: null,
-      description: "Libera dados da rede interna"
+      prefix_list_ids  = null,
+      security_groups : null,
+      self : null,
+      description : "Libera dados da rede interna"
     }
   ]
 
@@ -198,14 +200,14 @@ resource "aws_security_group" "acessos" {
 output "k8s-masters" {
   value = [
     for key, item in aws_instance.k8s_masters :
-      "k8s-master ${key+1} - ${item.private_ip} - ssh -i ~/.ssh/id_rsa ubuntu@${item.public_dns} -o ServerAliveInterval=60"
+    "k8s-master ${key + 1} - ${item.private_ip} - ssh -i ~/.ssh/id_rsa ubuntu@${item.public_dns} -o ServerAliveInterval=60"
   ]
 }
 
 output "output-k8s_workers" {
   value = [
     for key, item in aws_instance.k8s_workers :
-      "k8s-workers ${key+1} - ${item.private_ip} - ssh -i ~/.ssh/id_rsa ubuntu@${item.public_dns} -o ServerAliveInterval=60"
+    "k8s-workers ${key + 1} - ${item.private_ip} - ssh -i ~/.ssh/id_rsa ubuntu@${item.public_dns} -o ServerAliveInterval=60"
   ]
 }
 
