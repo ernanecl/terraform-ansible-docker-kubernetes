@@ -41,7 +41,7 @@ resource "aws_instance" "k8s_masters" {
     Name = "k8s-master-${count.index}"
   }
 
-  vpc_security_group_ids = [aws_security_group.acessos_master.id]
+  vpc_security_group_ids = [aws_security_group.k8s-acessos_master.id]
 
   depends_on = [
     aws_instance.k8s_workers,
@@ -72,9 +72,9 @@ resource "aws_instance" "k8s_workers" {
 }
 
 
-resource "aws_security_group" "acessos_master" {
+resource "aws_security_group" "k8s-acessos_master" {
   name        = "k8s-acessos_master"
-  description = "acessos inbound traffic"
+  description = "k8s-acessos_master inbound traffic"
   vpc_id      = "vpc-002bf2946d3dba700"
 
   ingress = [
@@ -136,7 +136,7 @@ resource "aws_security_group" "acessos_master" {
 
 
 resource "aws_security_group" "acessos" {
-  name        = "k8s-workers"
+  name        = "acessos"
   description = "acessos inbound traffic"
   vpc_id      = "vpc-002bf2946d3dba700"
 
