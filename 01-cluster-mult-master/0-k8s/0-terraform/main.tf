@@ -108,7 +108,7 @@ resource "aws_security_group" "k8s-acessos_master" {
       prefix_list_ids  = []
       protocol         = "-1"
       security_groups = [
-        "sg-068ba0bb7858a94f3",
+        "sg-00f5b4e524908cd5b",
       ]
       self    = false
       to_port = 0
