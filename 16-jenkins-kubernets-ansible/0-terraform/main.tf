@@ -28,6 +28,7 @@ resource "aws_instance" "jenkins" {
 resource "aws_security_group" "jenkins" {
   name        = "acessos_jenkins"
   description = "acessos_jenkins inbound traffic"
+  vpc_id      = "vpc-002bf2946d3dba700"
 
   ingress = [
     {
@@ -52,19 +53,19 @@ resource "aws_security_group" "jenkins" {
       security_groups : null,
       self : null
     },
-    {
-      cidr_blocks      = []
-      description      = "Libera acesso k8s_workers e k8s_masters"
-      from_port        = 0
-      ipv6_cidr_blocks = []
-      prefix_list_ids  = []
-      protocol         = "-1"
-      security_groups = [
-        "sg-00f5b4e524908cd5b",
-      ]
-      self    = false
-      to_port = 0
-    },
+    #    {
+    #      cidr_blocks      = []
+    #      description      = "Libera acesso k8s_workers e k8s_masters"
+    #      from_port        = 0
+    #      ipv6_cidr_blocks = []
+    #      prefix_list_ids  = []
+    #      protocol         = "-1"
+    #      security_groups = [
+    #        "sg-0e3fac7d6f17318c3, sg-00f5b4e524908cd5b",
+    #      ]
+    #      self    = false
+    #      to_port = 0
+    #    },
   ]
 
   egress = [
@@ -94,6 +95,6 @@ output "jenkins" {
     "private: ${aws_instance.jenkins.private_ip}",
     "public: ${aws_instance.jenkins.public_ip}",
     "public_dns: ${aws_instance.jenkins.public_dns}",
-    "ssh -i ~/Desktop/devops/treinamentoItau ubuntu@${aws_instance.jenkins.public_dns}"
+    "ssh -i ~/.ssh/id_rsa ubuntu@${aws_instance.jenkins.public_dns}"
   ]
 }
