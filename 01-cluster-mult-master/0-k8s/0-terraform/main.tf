@@ -160,7 +160,7 @@ resource "aws_security_group" "acessos" {
       prefix_list_ids  = []
       protocol         = "-1"
       security_groups = [
-        "${aws_security_group.acessos_master.id}",
+        "${aws_security_group.k8s-acessos_master.id}",
       ]
       self    = false
       to_port = 0
