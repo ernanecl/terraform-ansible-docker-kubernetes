@@ -1,5 +1,3 @@
-#!/bin/bash
-
 ANSIBLE_OUT=$(ansible-playbook -i hosts provisionar.yml -u ubuntu --private-key ~/Desktop/devops/treinamentoItau)
 echo $ANSIBLE_OUT
 
