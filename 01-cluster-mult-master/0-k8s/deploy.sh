@@ -7,10 +7,10 @@
 #### idéia para buscar itens do debugger do ansible ####
 # | grep -oP "(kubeadm join.*?certificate-key.*?)'" | sed 's/\\//g' | sed "s/'//g" | sed "s/'t//g" | sed "s/,//g"
 
-cd 0-terraform
-~/terraform/terraform init
-~/terraform/terraform fmt
-~/terraform/terraform apply -auto-approve
+# cd 0-terraform
+# ~/terraform/terraform init
+# ~/terraform/terraform fmt
+# ~/terraform/terraform apply -auto-approve
 
 echo  "Aguardando a criação das maquinas ..."
 sleep 5
